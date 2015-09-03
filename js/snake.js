@@ -34,7 +34,8 @@
 
     while (!this.grid.paths[frontPos] ||
            (frontPos[0] == this.grid.pathTarget[0] &&
-            frontPos[1] == this.grid.pathTarget[1])) {
+            frontPos[1] == this.grid.pathTarget[1]) ||
+           SnakeGame.Block.atPos(this.grid.blocks, this.grid.pathTarget)) {
       this.grid.pathTarget = [
         Math.floor(Math.random() * this.grid.numRows),
         Math.floor(Math.random() * this.grid.numCols)

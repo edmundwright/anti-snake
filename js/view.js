@@ -42,6 +42,19 @@
     })
   };
 
+  View.prototype.updateHTMLTarget = function () {
+    var target = this.grid.pathTarget;
+    this.$main.find("section").each(function () {
+      var pos = $(this).data('pos');
+
+      if (target[0] === pos[0] && target[1] === pos[1]) {
+        $(this).addClass("target");
+      } else {
+        $(this).removeClass("target");
+      }
+    })
+  };
+
   View.prototype.setupHandlers = function () {
     // this.setupKeypress();
     this.setupClick();
@@ -84,6 +97,7 @@
 
   View.prototype.step = function () {
     this.updateHTMLSnake();
+    // this.updateHTMLTarget();
     this.snake.chooseDirection();
     this.snake.move();
   }

@@ -7,6 +7,7 @@
     this.snake = snake;
     this.blocks = blocks;
 
+    this.pathStart = this.snake.segments[0].pos;
     this.pathTarget = [2, 1];
     this.recalculatePaths();
   };
@@ -71,6 +72,9 @@
 
   Grid.prototype.findPathsToPos = function (pos) {
     this.travelableNeighbours(pos).forEach(function (neighbour) {
+      if (this.paths[this.pathStart]) {
+        return;
+      }
       if (!this.paths[neighbour] ||
           this.paths[neighbour].length > this.paths[pos].length + 1) {
           this.paths[neighbour] = this.paths[pos].concat([pos]);
@@ -82,6 +86,7 @@
   Grid.prototype.recalculatePaths = function () {
     this.paths = {};
     this.paths[this.pathTarget] = [];
+    this.pathStart = this.snake.segments[0].pos;
     this.findPathsToPos(this.pathTarget);
   };
 })();

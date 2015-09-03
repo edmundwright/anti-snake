@@ -25,3 +25,7 @@ section {
 .block-here {
   background: blue;
 }
+
+.target {
+  background: green;
+}
