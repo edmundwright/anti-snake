@@ -10,61 +10,27 @@
 
 <main class="group"></main>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
-</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="js/segment.js"></script>
+<script src="js/snake.js"></script>
+<script src="js/view.js"></script>
 
 <script>
   var $main = $("main");
 
-  var word = "Edmund WrightJKJK";
+  var word = "Edmund Wright";
   var numRows = 13;
   var numCols = 24;
   var firstPos = [6, 2];
-  var delta = [0, 1];
+  var initialDirection = [-1, 0];
 
-  for (var row = 0; row < numRows; row++) {
-    for (var col = 0; col < numCols; col++) {
-      var $section = $("<section></section>");
-      $section.data("pos", [row, col]);
-      $main.append($section);
-    }
-  }
+  var snake = new SnakeGame.Snake(
+    word,
+    firstPos,
+    initialDirection
+  );
 
-  var Snake = function (word, firstPos, delta) {
-    this.word = word;
-
-    this.segments = []
-
-    for (letterIdx = 0; letterIdx < this.word.length; letterIdx++) {
-      var thisPos = [
-        firstPos[0] + letterIdx * delta[0],
-        firstPos[1] + letterIdx * delta[1]
-      ];
-
-      this.segments.push(new SnakeGame.Segment(this.word[letterIdx], thisPos));
-    }
-  };
-
-  Snake.prototype.segmentOnPos = function (pos) {
-    for (var i = 0; i < this.segments.length; i++) {
-      if (this.segments[i].pos[0] === pos[0] && this.segments[i].pos[1] === pos[1]) {
-        return this.segments[i];
-      }
-    }
-  };
-
-  var snake = new Snake(word, firstPos, delta);
-
-  console.log(snake);
-
-  $("section").each(function () {
-    var segmentHere = snake.segmentOnPos($(this).data('pos'));
-    if (segmentHere) {
-      $(this).toggleClass("snake");
-      $(this).text(segmentHere.letter);
-    }
-  })
+  new SnakeGame.View($main, snake, numRows, numCols);
 </script>
 
 </body>
