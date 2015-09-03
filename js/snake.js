@@ -18,15 +18,6 @@
     this.numCols = numCols;
   }
 
-  Snake.prototype.segmentOnPos = function (pos) {
-    for (var segIdx = 0; segIdx < this.segments.length; segIdx++) {
-      if (this.segments[segIdx].pos[0] === pos[0] &&
-          this.segments[segIdx].pos[1] === pos[1]) {
-        return this.segments[segIdx];
-      }
-    }
-  };
-
   Snake.prototype.move = function () {
     for (var segIdx = this.segments.length - 1; segIdx > 0; segIdx--) {
       this.segments[segIdx].pos[0] = this.segments[segIdx - 1].pos[0];
