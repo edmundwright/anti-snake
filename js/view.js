@@ -31,7 +31,7 @@
       var segmentHere = snake.segmentOnPos($(this).data('pos'));
       if (segmentHere) {
         $(this).addClass("snake");
-        $(this).text(segmentHere.letter);
+        $(this).text(segmentHere.contents);
       } else {
         $(this).removeClass("snake");
         $(this).text("");

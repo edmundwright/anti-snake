@@ -9,7 +9,7 @@
 
     for (letterIdx = 0; letterIdx < this.word.length; letterIdx++) {
       var thisPos = [firstPos[0], firstPos[1] + letterIdx];
-      this.segments.push(new SnakeGame.Segment(this.word[letterIdx], thisPos));
+      this.segments.push(new SnakeGame.Block(this.word[letterIdx], thisPos));
     }
   };
 
