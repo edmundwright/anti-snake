@@ -13,9 +13,8 @@
     }
   };
 
-  Snake.prototype.receiveGridSize = function (numRows, numCols) {
-    this.numRows = numRows;
-    this.numCols = numCols;
+  Snake.prototype.receiveGrid = function (grid) {
+    this.grid = grid;
   }
 
   Snake.prototype.move = function () {
@@ -24,27 +23,30 @@
       this.segments[segIdx].pos[1] = this.segments[segIdx - 1].pos[1];
     }
 
-    this.segments[0].pos = this.newPos(this.segments[0].pos);
+    this.segments[0].pos = this.grid.newPos(
+      this.segments[0].pos,
+      this.direction
+    );
   };
 
-  Snake.prototype.newPos = function (pos) {
-    newPos = [
-      pos[0] + this.direction[0],
-      pos[1] + this.direction[1]
+  Snake.prototype.chooseDirection = function () {
+    var frontPos = this.segments[0].pos;
+
+    while (!this.grid.paths[frontPos] ||
+           (frontPos[0] == this.grid.pathTarget[0] &&
+            frontPos[1] == this.grid.pathTarget[1])) {
+      this.grid.pathTarget = [
+        Math.floor(Math.random() * this.grid.numRows),
+        Math.floor(Math.random() * this.grid.numCols)
+      ]
+      this.grid.recalculatePaths();
+    }
+
+    var path = this.grid.paths[frontPos];
+    var nextStep = path[path.length - 1];
+    this.direction = [
+      nextStep[0] - frontPos[0],
+      nextStep[1] - frontPos[1]
     ];
-
-    if (newPos[0] < 0) {
-      newPos[0] = this.numRows + newPos[0];
-    } else if (newPos[0] >= numRows) {
-      newPos[0] = newPos[0] - this.numRows;
-    }
-
-    if (newPos[1] < 0) {
-      newPos[1] = this.numCols + newPos[1];
-    } else if (newPos[1] >= numCols) {
-      newPos[1] = newPos[1] - this.numCols;
-    }
-
-    return newPos;
-  };
+  }
 })();

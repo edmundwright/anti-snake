@@ -6,22 +6,18 @@
 
     this.blocks = [];
     this.snake = snake;
+    this.grid = new SnakeGame.Grid(numRows, numCols, this.snake, this.blocks);
 
-    this.numRows = numRows;
-    this.numCols = numCols;
+    this.snake.receiveGrid(this.grid);
 
-    this.buildGrid();
-    this.render();
+    this.buildHTMLGrid();
     this.setupHandlers();
-
-    this.snake.receiveGridSize(numRows, numCols);
-
     setInterval(this.step.bind(this), 500);
   };
 
-  View.prototype.buildGrid = function () {
-    for (var row = 0; row < this.numRows; row++) {
-      for (var col = 0; col < this.numCols; col++) {
+  View.prototype.buildHTMLGrid = function () {
+    for (var row = 0; row < this.grid.numRows; row++) {
+      for (var col = 0; col < this.grid.numCols; col++) {
         var $section = $("<section></section>");
         $section.data("pos", [row, col]);
         this.$main.append($section);
@@ -29,7 +25,7 @@
     }
   };
 
-  View.prototype.render = function () {
+  View.prototype.updateHTMLSnake = function () {
     this.$main.find("section").each(function () {
       var segmentHere = SnakeGame.Block.atPos(
         snake.segments,
@@ -47,7 +43,7 @@
   };
 
   View.prototype.setupHandlers = function () {
-    this.setupKeypress();
+    // this.setupKeypress();
     this.setupClick();
   };
 
@@ -78,15 +74,17 @@
       if (block) {
         this.deleteBlock(block);
         $(e.currentTarget).removeClass("block-here");
-      } else {
+      } else if (!Block.atPos(this.snake.segments, pos)) {
         this.addBlockAtPos(pos);
         $(e.currentTarget).addClass("block-here");
+        this.grid.recalculatePaths();
       }
     }.bind(this));
   };
 
   View.prototype.step = function () {
-    this.render();
+    this.updateHTMLSnake();
+    this.snake.chooseDirection();
     this.snake.move();
   }
 
@@ -98,8 +96,4 @@
     index = this.blocks.indexOf(block)
     this.blocks.splice(index, 1);
   };
-
-  View.prototype.blockAtPos = function (pos) {
-
-  }
 })();
