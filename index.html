@@ -12,6 +12,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
 </script>
+<script src="js/segment.js"></script>
 
 <script>
   var $main = $("main");
@@ -30,7 +31,6 @@
     }
   }
 
-
   var Snake = function (word, firstPos, delta) {
     this.word = word;
 
@@ -42,7 +42,7 @@
         firstPos[1] + letterIdx * delta[1]
       ];
 
-      this.segments.push(new Segment(this.word[letterIdx], thisPos));
+      this.segments.push(new SnakeGame.Segment(this.word[letterIdx], thisPos));
     }
   };
 
@@ -52,11 +52,6 @@
         return this.segments[i];
       }
     }
-  };
-
-  var Segment = function (letter, initialPos) {
-    this.letter = letter;
-    this.pos = initialPos;
   };
 
   var snake = new Snake(word, firstPos, delta);
