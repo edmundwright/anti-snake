@@ -45,6 +45,13 @@
 
     var path = this.grid.paths[frontPos];
     var nextStep = path[path.length - 1];
+
+    if (SnakeGame.Block.atPos(this.grid.blocks, nextStep)) {
+      this.grid.recalculatePaths();
+      path = this.grid.paths[frontPos];
+      nextStep = path[path.length - 1];
+    }
+
     this.direction = [
       nextStep[0] - frontPos[0],
       nextStep[1] - frontPos[1]

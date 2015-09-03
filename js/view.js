@@ -90,14 +90,13 @@
       } else if (!Block.atPos(this.snake.segments, pos)) {
         this.addBlockAtPos(pos);
         $(e.currentTarget).addClass("block-here");
-        this.grid.recalculatePaths();
       }
     }.bind(this));
   };
 
   View.prototype.step = function () {
     this.updateHTMLSnake();
-    // this.updateHTMLTarget();
+    this.updateHTMLTarget();
     this.snake.chooseDirection();
     this.snake.move();
   }
