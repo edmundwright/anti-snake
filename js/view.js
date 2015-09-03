@@ -12,7 +12,7 @@
 
     this.buildHTMLGrid();
     this.setupHandlers();
-    setInterval(this.step.bind(this), 500);
+    setInterval(this.step.bind(this), 250);
   };
 
   View.prototype.buildHTMLGrid = function () {

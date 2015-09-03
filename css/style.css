@@ -19,7 +19,6 @@ section {
 
 .snake {
   background: red;
-
 }
 
 .block-here {
@@ -27,5 +26,5 @@ section {
 }
 
 .target {
-  background: lime;
+  background: red;
 }

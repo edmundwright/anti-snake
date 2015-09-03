@@ -19,16 +19,14 @@
 <script>
   var $main = $("main");
 
-  var word = "Edmund Wright";
+  var word = "Edmund Wright - Developer";
   var numRows = 13;
   var numCols = 24;
   var firstPos = [6, 2];
-  var initialDirection = [0, -1];
 
   var snake = new SnakeGame.Snake(
     word,
-    firstPos,
-    initialDirection
+    firstPos
   );
 
   new SnakeGame.View($main, snake, numRows, numCols);
