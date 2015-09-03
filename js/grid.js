@@ -58,6 +58,9 @@
   };
 
   Grid.prototype.travelableNeighbours = function (pos) {
+    if (this.travNeighbours[pos]) {
+      return this.travNeighbours[pos]
+    }
     var result = [];
 
     Grid.DIRECTIONS.forEach(function (direction) {
@@ -67,7 +70,7 @@
       }
     }.bind(this))
 
-    return result;
+    return this.travNeighbours[pos] = result;
   };
 
   Grid.prototype.findPathsToPos = function (pos) {
@@ -85,6 +88,7 @@
 
   Grid.prototype.recalculatePaths = function () {
     this.paths = {};
+    this.travNeighbours = {};
     this.paths[this.pathTarget] = [];
     this.pathStart = this.snake.segments[0].pos;
     this.findPathsToPos(this.pathTarget);
