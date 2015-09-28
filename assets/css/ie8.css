@@ -1,5 +1,5 @@
 /*
-	Fractal by HTML5 UP
+	Strata by HTML5 UP
 	html5up.net | @n33co
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
@@ -9,84 +9,66 @@
 	input[type="submit"],
 	input[type="reset"],
 	input[type="button"],
-	button,
 	.button {
 		position: relative;
 		-ms-behavior: url("assets/js/ie/PIE.htc");
-		border: solid 2px #e6e6e6 !important;
 	}
 
-		input[type="submit"]:hover,
-		input[type="reset"]:hover,
-		input[type="button"]:hover,
-		button:hover,
-		.button:hover {
-			border: solid 2px #e6e6e6 !important;
-		}
+/* Form */
 
-		input[type="submit"].special,
-		input[type="reset"].special,
-		input[type="button"].special,
-		button.special,
-		.button.special {
-			border: none !important;
-		}
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	select,
+	textarea {
+		position: relative;
+		-ms-behavior: url("assets/js/ie/PIE.htc");
+	}
 
-			input[type="submit"].special:hover,
-			input[type="reset"].special:hover,
-			input[type="button"].special:hover,
-			button.special:hover,
-			.button.special:hover {
-				border: none !important;
-			}
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	select {
+		height: 2.75em;
+		line-height: 2.75em;
+	}
+
+	input[type="checkbox"] + label:before,
+	input[type="radio"] + label:before {
+		display: none;
+	}
 
 /* Image */
 
 	.image {
+		position: relative;
 		-ms-behavior: url("assets/js/ie/PIE.htc");
 	}
+
+		.image:before, .image:after {
+			display: none !important;
+		}
 
 		.image img {
 			position: relative;
 			-ms-behavior: url("assets/js/ie/PIE.htc");
 		}
 
-		.image.phone:before, .image.phone:after {
-			display: none;
-		}
-
-		.image.phone .inner:before, .image.phone .inner:after {
-			display: none;
-		}
-
-/* List */
-
-	ul.icons li {
-		padding: 0 0 0 1.5em;
-	}
-
-		ul.icons li:first-child {
-			padding-left: 0 !important;
-		}
-
-		ul.icons li .icon:before {
-			font-size: 24px;
-		}
-
-	ul.icons.major li {
-		padding: 0 0 0 2.5em;
-	}
-
-		ul.icons.major li .icon:before {
-			font-size: 48px;
-		}
-
 /* Header */
 
 	#header {
-		min-height: 0;
+		background-image: url("../../images/bg.jpg");
+		background-repeat: no-repeat;
+		background-size: cover;
+		-ms-behavior: url("assets/js/ie/backgroundsize.min.htc");
 	}
 
-		#header .image {
-			margin: 0 0 2em 0;
+		#header h1 {
+			color: #ffffff;
 		}
+
+/* Footer */
+
+	#footer .icons a {
+		color: #ffffff;
+	}
