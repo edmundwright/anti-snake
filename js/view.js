@@ -39,7 +39,7 @@
         $(this).removeClass("snake");
         $(this).text("");
       }
-    })
+    });
   };
 
   View.prototype.updateHTMLTarget = function () {
@@ -52,7 +52,7 @@
       } else {
         $(this).removeClass("target");
       }
-    })
+    });
   };
 
   View.prototype.setupHandlers = function () {
@@ -99,14 +99,14 @@
     this.updateHTMLTarget();
     this.snake.chooseDirection();
     this.snake.move();
-  }
+  };
 
   View.prototype.addBlockAtPos = function (pos) {
     this.blocks.push(new Block("", pos));
   };
 
   View.prototype.deleteBlock = function (block) {
-    index = this.blocks.indexOf(block)
+    index = this.blocks.indexOf(block);
     this.blocks.splice(index, 1);
   };
 })();
