@@ -6,11 +6,16 @@
     this.pos = pos;
   };
 
-  Block.atPos = function (arr, pos) {
+  Block.prototype.isAtPos = function (pos) {
+    return this.pos[0] === pos[0] && this.pos[1] === pos[1];
+  };
+
+  Block.inArrayAtPos = function (arr, pos) {
+    var thisBlock;
     for (var i = 0; i < arr.length; i++) {
-      if (arr[i].pos[0] === pos[0] &&
-          arr[i].pos[1] === pos[1]) {
-        return arr[i];
+      thisBlock = arr[i];
+      if (thisBlock.isAtPos(pos)) {
+        return thisBlock;
       }
     }
   };

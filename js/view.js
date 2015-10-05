@@ -4,9 +4,9 @@
   View = SnakeGame.View = function ($main, snake, numRows, numCols) {
     this.$main = $main;
 
-    this.blocks = [];
+    this.walls = [];
     this.snake = snake;
-    this.grid = new SnakeGame.Grid(numRows, numCols, this.snake, this.blocks);
+    this.grid = new SnakeGame.Grid(numRows, numCols, this.snake, this.walls);
 
     this.snake.receiveGrid(this.grid);
 
@@ -27,10 +27,7 @@
 
   View.prototype.updateHTMLSnake = function () {
     this.$main.find("section").each(function () {
-      var segmentHere = SnakeGame.Block.atPos(
-        snake.segments,
-        $(this).data('pos')
-      );
+      var segmentHere = snake.segmentAtPos($(this).data('pos'));
 
       if (segmentHere) {
         $(this).addClass("snake");
@@ -57,7 +54,9 @@
 
   View.prototype.setupHandlers = function () {
     // this.setupKeypress();
-    this.setupClick();
+    this.setupMouseUpAndLeave();
+    this.setupMouseDown();
+    this.setupMouseOver();
   };
 
   View.prototype.setupKeypress = function () {
@@ -79,17 +78,47 @@
     }.bind(this));
   };
 
-  View.prototype.setupClick = function () {
-    this.$main.on('click', "section", function (e) {
-      var pos = $(e.currentTarget).data("pos");
-      var block = Block.atPos(this.blocks, pos);
+  View.prototype.setupMouseDown = function () {
+    this.$main.on('mousedown', 'section', function (e) {
+      e.preventDefault();
 
-      if (block) {
-        this.deleteBlock(block);
-        $(e.currentTarget).removeClass("block-here");
-      } else if (!Block.atPos(this.snake.segments, pos)) {
-        this.addBlockAtPos(pos);
-        $(e.currentTarget).addClass("block-here");
+      var pos = $(e.currentTarget).data("pos");
+      var wallHere = this.grid.wallAtPos(pos);
+
+      if (wallHere) {
+        this.deletingWalls = true;
+        this.deleteWall(wallHere, $(e.currentTarget));
+      } else if (!snake.segmentAtPos(pos)) {
+        this.addingWalls = true;
+        this.addWall(pos, $(e.currentTarget));
+      }
+    }.bind(this));
+  };
+
+  View.prototype.setupMouseUpAndLeave = function () {
+    this.$main.on('mouseup mouseleave', function (e) {
+      e.preventDefault();
+      this.addingWalls = false;
+      this.deletingWalls = false;
+    }.bind(this));
+  };
+
+  View.prototype.setupMouseOver = function () {
+    this.$main.on('mouseover', "section", function (e) {
+      console.log("over");
+      if (this.addingWalls || this.deletingWalls) {
+        e.preventDefault();
+        var pos = $(e.currentTarget).data("pos");
+        console.log("over", pos);
+        var wallHere = this.grid.wallAtPos(pos);
+
+        if (wallHere) {
+          if (this.deletingWalls) {
+            this.deleteWall(wallHere, $(e.currentTarget));
+          }
+        } else if (this.addingWalls && !snake.segmentAtPos(pos)) {
+          this.addWall(pos, $(e.currentTarget));
+        }
       }
     }.bind(this));
   };
@@ -101,12 +130,18 @@
     this.snake.move();
   };
 
-  View.prototype.addBlockAtPos = function (pos) {
-    this.blocks.push(new Block("", pos));
+  View.prototype.addWall= function (pos, $section) {
+    this.walls.push(new Block("", pos));
+    if ($section) {
+      $section.addClass("wall-here");
+    }
   };
 
-  View.prototype.deleteBlock = function (block) {
-    index = this.blocks.indexOf(block);
-    this.blocks.splice(index, 1);
+  View.prototype.deleteWall = function (wall, $section) {
+    index = this.walls.indexOf(wall);
+    this.walls.splice(index, 1);
+    if ($section) {
+      $section.removeClass("wall-here");
+    }
   };
 })();

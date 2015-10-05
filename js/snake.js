@@ -4,7 +4,7 @@
   var Snake = SnakeGame.Snake = function (word, firstPos) {
     this.word = word;
 
-    this.segments = []
+    this.segments = [];
 
     for (letterIdx = 0; letterIdx < this.word.length; letterIdx++) {
       var thisPos = [firstPos[0], firstPos[1] + letterIdx];
@@ -12,9 +12,13 @@
     }
   };
 
+  Snake.prototype.segmentAtPos = function (pos) {
+    return Block.inArrayAtPos(this.segments, pos);
+  };
+
   Snake.prototype.receiveGrid = function (grid) {
     this.grid = grid;
-  }
+  };
 
   Snake.prototype.move = function () {
     for (var segIdx = this.segments.length - 1; segIdx > 0; segIdx--) {
@@ -34,19 +38,19 @@
     while (!this.grid.paths[frontPos] ||
            (frontPos[0] == this.grid.pathTarget[0] &&
             frontPos[1] == this.grid.pathTarget[1]) ||
-           SnakeGame.Block.atPos(this.grid.blocks, this.grid.pathTarget) ||
-           SnakeGame.Block.atPos(this.segments, this.grid.pathTarget)) {
+           this.grid.wallAtPos(this.grid.pathTarget) ||
+           this.segmentAtPos(this.grid.pathTarget)) {
       this.grid.pathTarget = [
         Math.floor(Math.random() * this.grid.numRows),
         Math.floor(Math.random() * this.grid.numCols)
-      ]
+      ];
       this.grid.recalculatePaths();
     }
 
     var path = this.grid.paths[frontPos];
     var nextStep = path[path.length - 1];
 
-    if (SnakeGame.Block.atPos(this.grid.blocks, nextStep)) {
+    if (this.grid.wallAtPos(nextStep)) {
       this.grid.recalculatePaths();
       path = this.grid.paths[frontPos];
       nextStep = path[path.length - 1];
@@ -56,5 +60,5 @@
       nextStep[0] - frontPos[0],
       nextStep[1] - frontPos[1]
     ];
-  }
+  };
 })();

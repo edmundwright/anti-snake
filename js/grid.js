@@ -1,11 +1,11 @@
 (function () {
   window.SnakeGame = window.SnakeGame || {};
 
-  Grid = SnakeGame.Grid = function (numRows, numCols, snake, blocks) {
+  Grid = SnakeGame.Grid = function (numRows, numCols, snake, walls) {
     this.numRows = numRows;
     this.numCols = numCols;
     this.snake = snake;
-    this.blocks = blocks;
+    this.walls = walls;
 
     this.pathStart = this.snake.segments[0].pos;
     this.pathTarget = [2, 1];
@@ -24,15 +24,15 @@
            pos[1] >= 0 &&
            pos[0] < this.numRows &&
            pos[1] < this.numCols;
-  }
+  };
 
   Grid.prototype.isClear = function (pos) {
-    blockAtPos = Block.atPos(this.blocks, pos);
-    if (blockAtPos) {
-      return false;
-    }
-    return true;
-  }
+    return !this.wallAtPos(pos);
+  };
+
+  Grid.prototype.wallAtPos = function (pos) {
+    return Block.inArrayAtPos(this.walls, pos);
+  };
 
   Grid.prototype.newPos = function (pos, direction) {
     newPos = [
@@ -59,7 +59,7 @@
 
   Grid.prototype.travelableNeighbours = function (pos) {
     if (this.travNeighbours[pos]) {
-      return this.travNeighbours[pos]
+      return this.travNeighbours[pos];
     }
     var result = [];
 
@@ -68,9 +68,9 @@
       if (this.inGrid(neighbour) && this.isClear(neighbour)) {
         result.push(neighbour);
       }
-    }.bind(this))
+    }.bind(this));
 
-    return this.travNeighbours[pos] = result;
+    return this.travNeighbours[pos] = result; // nope I didn't, JSHint
   };
 
   Grid.prototype.findPathsToPos = function (pos) {
@@ -83,7 +83,7 @@
           this.paths[neighbour] = this.paths[pos].concat([pos]);
           this.findPathsToPos(neighbour);
       }
-    }.bind(this))
+    }.bind(this));
   };
 
   Grid.prototype.recalculatePaths = function () {

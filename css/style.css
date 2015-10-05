@@ -17,14 +17,16 @@ section {
   height: 45px;
 }
 
-.snake {
+section.snake {
   background: red;
+  transition: none;
 }
 
-.block-here {
+section.wall-here {
   background: blue;
+  transition: background 0.25s;
 }
 
-.target {
+section.target {
   background: red;
 }
