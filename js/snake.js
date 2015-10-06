@@ -1,8 +1,9 @@
 (function () {
   window.SnakeGame = window.SnakeGame || {};
 
-  var Snake = SnakeGame.Snake = function (word, firstPos) {
+  var Snake = SnakeGame.Snake = function (word, stupid, firstPos) {
     this.word = word;
+    this.stupid = stupid;
 
     this.segments = [];
 

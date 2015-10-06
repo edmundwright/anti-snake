@@ -1,14 +1,19 @@
 (function () {
   window.SnakeGame = window.SnakeGame || {};
 
-  View = SnakeGame.View = function ($main, word, numSquares) {
+  View = SnakeGame.View = function ($main, word, numSquares, stupid) {
     this.$main = $main;
 
     this.chooseDimensions(numSquares);
     this.buildHTMLGrid();
 
     this.walls = [];
-    this.snake = new SnakeGame.Snake(word, [Math.round(this.dimensions.numRows / 2), 2]);
+
+    this.snake = new SnakeGame.Snake(
+      word,
+      stupid,
+      [Math.round(this.dimensions.numRows / 2) - 1, this.dimensions.numCols - 1]
+    );
 
     this.grid = new SnakeGame.Grid(
       this.dimensions.numRows,
@@ -20,7 +25,7 @@
     this.snake.receiveGrid(this.grid);
 
     this.setupHandlers();
-    setInterval(this.step.bind(this), 100);
+    setInterval(this.step.bind(this), 200);
   };
 
   View.prototype.chooseDimensions = function (numSquares) {

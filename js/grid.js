@@ -75,9 +75,9 @@
 
   Grid.prototype.findPathsToPos = function (pos) {
     this.travelableNeighbours(pos).forEach(function (neighbour) {
-      // if (this.paths[this.pathStart]) {
-      //   return;
-      // }
+      if (this.snake.stupid && this.paths[this.pathStart]) {
+        return;
+      }
       if (!this.paths[neighbour] ||
           this.paths[neighbour].length > this.paths[pos].length + 1) {
           this.paths[neighbour] = this.paths[pos].concat([pos]);
