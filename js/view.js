@@ -162,6 +162,7 @@
 
   View.prototype.setupMouseUp = function () {
     $(document).on('mouseup', function (e) {
+      e.preventDefault();
       this.addingWalls = false;
       this.deletingWalls = false;
     }.bind(this));
@@ -170,10 +171,8 @@
   View.prototype.setupMouseEnter = function () {
     this.$main.on('mouseenter', "section", function (e) {
       e.preventDefault();
-      console.log("over");
       if (this.addingWalls || this.deletingWalls) {
         var pos = $(e.currentTarget).data("pos");
-        console.log("over", pos);
         var wallHere = this.grid.wallAtPos(pos);
 
         if (wallHere) {
