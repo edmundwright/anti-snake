@@ -24,31 +24,27 @@
   };
 
   View.prototype.chooseDimensions = function (numSquares) {
-    this.dimensions = {};
-
-    var smallestWindowDimension = Math.min(
+    var ratio = $(window).height() / $(window).width();
+    var smallestDimension = Math.min(
       $(window).width(), $(window).height()
     );
 
+    this.dimensions = {};
+
     this.dimensions.sectionBorder = Math.round(
-      Math.max(smallestWindowDimension * 0.0015, 1)
+      Math.max(smallestDimension * 0.0015, 1)
     );
-
-    this.dimensions.height = $(window).height();
-    this.dimensions.width = $(window).width();
-
-    var ratio = this.dimensions.height / this.dimensions.width;
 
     this.dimensions.numCols = Math.round(Math.sqrt(numSquares / ratio));
     this.dimensions.numRows = Math.round(numSquares / this.dimensions.numCols);
 
     this.dimensions.squareWidth = Math.min(
       Math.floor(
-        (this.dimensions.width / this.dimensions.numCols) -
+        ($(window).width() / this.dimensions.numCols) -
         (this.dimensions.sectionBorder * 2)
       ),
       Math.floor(
-        (this.dimensions.height / this.dimensions.numRows) -
+        ($(window).height()/ this.dimensions.numRows) -
         (this.dimensions.sectionBorder * 2)
       )
     );
