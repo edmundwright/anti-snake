@@ -36,7 +36,7 @@
   Snake.prototype.chooseDirection = function () {
     var frontPos = this.segments[0].pos;
 
-    while (!this.grid.paths[frontPos] ||
+    while (!this.grid.nextStep[frontPos] ||
            (frontPos[0] == this.grid.pathTarget[0] &&
             frontPos[1] == this.grid.pathTarget[1]) ||
            this.grid.wallAtPos(this.grid.pathTarget) ||
@@ -48,13 +48,11 @@
       this.grid.recalculatePaths();
     }
 
-    var path = this.grid.paths[frontPos];
-    var nextStep = path[path.length - 1];
+    var nextStep = this.grid.nextStep[frontPos];
 
     if (this.grid.wallAtPos(nextStep)) {
       this.grid.recalculatePaths();
-      path = this.grid.paths[frontPos];
-      nextStep = path[path.length - 1];
+      nextStep = this.grid.nextStep[frontPos];
     }
 
     this.direction = [

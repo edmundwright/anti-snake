@@ -58,9 +58,9 @@
   };
 
   Grid.prototype.travelableNeighbours = function (pos) {
-    if (this.travNeighbours[pos]) {
-      return this.travNeighbours[pos];
-    }
+    // if (this.travNeighbours[pos]) {
+    //   return this.travNeighbours[pos];
+    // }
     var result = [];
 
     Grid.DIRECTIONS.forEach(function (direction) {
@@ -70,7 +70,7 @@
       }
     }.bind(this));
 
-    return this.travNeighbours[pos] = result; // nope I didn't, JSHint
+    return /*this.travNeighbours[pos] =*/ result;
   };
 
   Grid.prototype.findPathsToPos = function (pos) {
@@ -87,10 +87,30 @@
   };
 
   Grid.prototype.recalculatePaths = function () {
-    this.paths = {};
-    this.travNeighbours = {};
-    this.paths[this.pathTarget] = [];
+    // this.paths = {};
+    // this.travNeighbours = {};
+    // this.paths[this.pathTarget] = [];
     this.pathStart = this.snake.segments[0].pos;
-    this.findPathsToPos(this.pathTarget);
+    this.findPathsToPosBFS(this.pathStart, this.pathTarget);
+  };
+
+  Grid.prototype.findPathsToPosBFS = function (start, target) {
+    var frontier, nextStep, currentStep, neighbours, i, neighbour;
+    frontier = [];
+    frontier.push(target);
+    nextStep = this.nextStep = {};
+    nextStep[target] = null;
+
+    while (frontier.length !== 0) {
+      currentStep = frontier.shift();
+      neighbours = this.travelableNeighbours(currentStep);
+      for (i = 0; i < neighbours.length; i++) {
+        neighbour = neighbours[i];
+        if (!(neighbour in nextStep)) {
+          frontier.push(neighbour);
+          nextStep[neighbour] = currentStep;
+        }
+      }
+    }
   };
 })();
