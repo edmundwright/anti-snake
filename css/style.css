@@ -1,8 +1,7 @@
 main {
-  width: 1200px;
-  margin: 10px auto;
-  border-top: 5px solid red;
-  border-left: 5px solid red;
+  margin: 0px auto;
+  border-color: transparent;
+  border-style: solid;
 
   font-family: sans-serif;
   color: white;
@@ -11,22 +10,22 @@ main {
 
 section {
   float: left;
-  border-bottom: 5px solid red;
-  border-right: 5px solid red;
-  width: 45px;
-  height: 45px;
+  border-style: solid;
+  border-color: transparent;
 }
 
 section.snake {
   background: red;
   transition: none;
+  border-color: red;
 }
 
 section.wall-here {
-  background: blue;
-  transition: background 0.25s;
+  border-color: blue;
+  transition: border-color 0.25s;
 }
 
 section.target {
   background: red;
+  border-color: red;
 }

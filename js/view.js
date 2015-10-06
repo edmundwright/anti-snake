@@ -1,31 +1,104 @@
 (function () {
   window.SnakeGame = window.SnakeGame || {};
 
-  View = SnakeGame.View = function ($main, snake, numRows, numCols) {
+  View = SnakeGame.View = function ($main, word, numSquares) {
     this.$main = $main;
 
+    this.chooseDimensions(numSquares);
+    this.buildHTMLGrid();
+
     this.walls = [];
-    this.snake = snake;
-    this.grid = new SnakeGame.Grid(numRows, numCols, this.snake, this.walls);
+    this.snake = new SnakeGame.Snake(word, [Math.round(this.dimensions.numRows / 2), 2]);
+
+    this.grid = new SnakeGame.Grid(
+      this.dimensions.numRows,
+      this.dimensions.numCols,
+      this.snake,
+      this.walls
+    );
 
     this.snake.receiveGrid(this.grid);
 
-    this.buildHTMLGrid();
     this.setupHandlers();
     setInterval(this.step.bind(this), 250);
   };
 
+  View.prototype.chooseDimensions = function (numSquares) {
+    this.dimensions = {};
+
+    this.dimensions.verticalMargin = parseInt($main.css("margin-top"));
+
+    var smallestWindowDimension = Math.min(
+      $(window).width(), $(window).height()
+    );
+
+    this.dimensions.mainBorder = Math.round(Math.max(smallestWindowDimension * 0.006, 1));
+    this.dimensions.sectionBorder = Math.round(Math.max(smallestWindowDimension * 0.0015, 1));
+
+    this.dimensions.height = $(window).height() -
+      (this.dimensions.verticalMargin * 2) - (this.dimensions.mainBorder * 2);
+    this.dimensions.width = $(window).width() -
+      (this.dimensions.verticalMargin * 2) - (this.dimensions.mainBorder * 2);
+
+    var ratio = this.dimensions.height / this.dimensions.width;
+
+    this.dimensions.numCols = Math.round(Math.sqrt(numSquares / ratio));
+    this.dimensions.numRows = Math.round(numSquares / this.dimensions.numCols);
+
+    this.dimensions.squareWidth = Math.min(
+      Math.floor(
+        (this.dimensions.width / this.dimensions.numCols) -
+        (this.dimensions.sectionBorder * 2)
+      ),
+      Math.floor(
+        (this.dimensions.height / this.dimensions.numRows) -
+        (this.dimensions.sectionBorder * 2)
+      )
+    );
+
+    this.dimensions.height =
+      (this.dimensions.squareWidth + (this.dimensions.sectionBorder * 2)) *
+      this.dimensions.numRows;
+    this.dimensions.width =
+      (this.dimensions.squareWidth + (this.dimensions.sectionBorder * 2)) *
+      this.dimensions.numCols;
+
+    this.dimensions.verticalMargin =
+      (($(window).height() - this.dimensions.height) / 2) -
+      this.dimensions.mainBorder;
+    this.dimensions.horizontalMargin =
+      (($(window).width() - this.dimensions.width) / 2) -
+      this.dimensions.mainBorder;
+  };
+
   View.prototype.buildHTMLGrid = function () {
-    for (var row = 0; row < this.grid.numRows; row++) {
-      for (var col = 0; col < this.grid.numCols; col++) {
+    $main.css("height", this.dimensions.height + "px");
+    $main.css("width", this.dimensions.width + "px");
+    $main.css("font-size", this.dimensions.squareWidth * 0.9 + "px");
+    $main.css("border-width", this.dimensions.mainBorder + "px");
+    $main.css("margin",
+      this.dimensions.verticalMargin + "px " +
+      this.dimensions.horizontalMargin + "px");
+
+    for (var row = 0; row < this.dimensions.numRows; row++) {
+      for (var col = 0; col < this.dimensions.numCols; col++) {
         var $section = $("<section></section>");
         $section.data("pos", [row, col]);
         this.$main.append($section);
       }
     }
+
+    $main.find("section").css(
+      "width", this.dimensions.squareWidth + "px"
+    ).css(
+      "height", this.dimensions.squareWidth + "px"
+    ).css(
+      "border-width", this.dimensions.sectionBorder + "px"
+    );
   };
 
   View.prototype.updateHTMLSnake = function () {
+    var snake = this.snake;
     this.$main.find("section").each(function () {
       var segmentHere = snake.segmentAtPos($(this).data('pos'));
 
@@ -56,7 +129,7 @@
     // this.setupKeypress();
     this.setupMouseUpAndLeave();
     this.setupMouseDown();
-    this.setupMouseOver();
+    this.setupMouseEnter();
   };
 
   View.prototype.setupKeypress = function () {
@@ -88,7 +161,7 @@
       if (wallHere) {
         this.deletingWalls = true;
         this.deleteWall(wallHere, $(e.currentTarget));
-      } else if (!snake.segmentAtPos(pos)) {
+      } else if (!this.snake.segmentAtPos(pos)) {
         this.addingWalls = true;
         this.addWall(pos, $(e.currentTarget));
       }
@@ -103,8 +176,8 @@
     }.bind(this));
   };
 
-  View.prototype.setupMouseOver = function () {
-    this.$main.on('mouseover', "section", function (e) {
+  View.prototype.setupMouseEnter = function () {
+    this.$main.on('mouseenter', "section", function (e) {
       console.log("over");
       if (this.addingWalls || this.deletingWalls) {
         e.preventDefault();
@@ -116,7 +189,7 @@
           if (this.deletingWalls) {
             this.deleteWall(wallHere, $(e.currentTarget));
           }
-        } else if (this.addingWalls && !snake.segmentAtPos(pos)) {
+        } else if (this.addingWalls && !this.snake.segmentAtPos(pos)) {
           this.addWall(pos, $(e.currentTarget));
         }
       }
