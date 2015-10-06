@@ -127,7 +127,7 @@
 
   View.prototype.setupHandlers = function () {
     // this.setupKeypress();
-    this.setupMouseUpAndLeave();
+    this.setupMouseUp();
     this.setupMouseDown();
     this.setupMouseEnter();
   };
@@ -168,9 +168,8 @@
     }.bind(this));
   };
 
-  View.prototype.setupMouseUpAndLeave = function () {
-    this.$main.on('mouseup mouseleave', function (e) {
-      e.preventDefault();
+  View.prototype.setupMouseUp = function () {
+    $(document).on('mouseup', function (e) {
       this.addingWalls = false;
       this.deletingWalls = false;
     }.bind(this));
@@ -178,9 +177,9 @@
 
   View.prototype.setupMouseEnter = function () {
     this.$main.on('mouseenter', "section", function (e) {
+      e.preventDefault();
       console.log("over");
       if (this.addingWalls || this.deletingWalls) {
-        e.preventDefault();
         var pos = $(e.currentTarget).data("pos");
         console.log("over", pos);
         var wallHere = this.grid.wallAtPos(pos);
