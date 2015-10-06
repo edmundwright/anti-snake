@@ -26,19 +26,16 @@
   View.prototype.chooseDimensions = function (numSquares) {
     this.dimensions = {};
 
-    this.dimensions.verticalMargin = parseInt($main.css("margin-top"));
-
     var smallestWindowDimension = Math.min(
       $(window).width(), $(window).height()
     );
 
-    this.dimensions.mainBorder = Math.round(Math.max(smallestWindowDimension * 0.006, 1));
-    this.dimensions.sectionBorder = Math.round(Math.max(smallestWindowDimension * 0.0015, 1));
+    this.dimensions.sectionBorder = Math.round(
+      Math.max(smallestWindowDimension * 0.0015, 1)
+    );
 
-    this.dimensions.height = $(window).height() -
-      (this.dimensions.verticalMargin * 2) - (this.dimensions.mainBorder * 2);
-    this.dimensions.width = $(window).width() -
-      (this.dimensions.verticalMargin * 2) - (this.dimensions.mainBorder * 2);
+    this.dimensions.height = $(window).height();
+    this.dimensions.width = $(window).width();
 
     var ratio = this.dimensions.height / this.dimensions.width;
 
@@ -64,21 +61,20 @@
       this.dimensions.numCols;
 
     this.dimensions.verticalMargin =
-      (($(window).height() - this.dimensions.height) / 2) -
-      this.dimensions.mainBorder;
+      ($(window).height() - this.dimensions.height) / 2;
     this.dimensions.horizontalMargin =
-      (($(window).width() - this.dimensions.width) / 2) -
-      this.dimensions.mainBorder;
+      ($(window).width() - this.dimensions.width) / 2;
   };
 
   View.prototype.buildHTMLGrid = function () {
     $main.css("height", this.dimensions.height + "px");
     $main.css("width", this.dimensions.width + "px");
     $main.css("font-size", this.dimensions.squareWidth * 0.9 + "px");
-    $main.css("border-width", this.dimensions.mainBorder + "px");
-    $main.css("margin",
+    $main.css(
+      "margin",
       this.dimensions.verticalMargin + "px " +
-      this.dimensions.horizontalMargin + "px");
+      this.dimensions.horizontalMargin + "px"
+    );
 
     for (var row = 0; row < this.dimensions.numRows; row++) {
       for (var col = 0; col < this.dimensions.numCols; col++) {
