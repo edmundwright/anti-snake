@@ -1,7 +1,7 @@
 (function () {
   window.SnakeGame = window.SnakeGame || {};
 
-  View = SnakeGame.View = function ($main, word, numSquares, stupid) {
+  View = SnakeGame.View = function ($main, word, numSquares, stupid, interval) {
     this.$main = $main;
 
     this.chooseDimensions(numSquares);
@@ -25,7 +25,7 @@
     this.snake.receiveGrid(this.grid);
 
     this.setupHandlers();
-    setInterval(this.step.bind(this), 200);
+    setInterval(this.step.bind(this), interval);
   };
 
   View.prototype.chooseDimensions = function (numSquares) {

@@ -58,9 +58,6 @@
   };
 
   Grid.prototype.travelableNeighbours = function (pos) {
-    // if (this.travNeighbours[pos]) {
-    //   return this.travNeighbours[pos];
-    // }
     var result = [];
 
     Grid.DIRECTIONS.forEach(function (direction) {
@@ -70,31 +67,15 @@
       }
     }.bind(this));
 
-    return /*this.travNeighbours[pos] =*/ result;
-  };
-
-  Grid.prototype.findPathsToPos = function (pos) {
-    this.travelableNeighbours(pos).forEach(function (neighbour) {
-      if (this.snake.stupid && this.paths[this.pathStart]) {
-        return;
-      }
-      if (!this.paths[neighbour] ||
-          this.paths[neighbour].length > this.paths[pos].length + 1) {
-          this.paths[neighbour] = this.paths[pos].concat([pos]);
-          this.findPathsToPos(neighbour);
-      }
-    }.bind(this));
+    return result;
   };
 
   Grid.prototype.recalculatePaths = function () {
-    // this.paths = {};
-    // this.travNeighbours = {};
-    // this.paths[this.pathTarget] = [];
     this.pathStart = this.snake.segments[0].pos;
-    this.findPathsToPosBFS(this.pathStart, this.pathTarget);
+    this.findPaths(this.pathStart, this.pathTarget);
   };
 
-  Grid.prototype.findPathsToPosBFS = function (start, target) {
+  Grid.prototype.findPaths = function (start, target) {
     var frontier, nextStep, currentStep, neighbours, i, neighbour;
     frontier = [];
     frontier.push(target);
