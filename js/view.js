@@ -20,7 +20,7 @@
     this.snake.receiveGrid(this.grid);
 
     this.setupHandlers();
-    setInterval(this.step.bind(this), 250);
+    setInterval(this.step.bind(this), 100);
   };
 
   View.prototype.chooseDimensions = function (numSquares) {
