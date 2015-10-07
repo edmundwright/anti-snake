@@ -12,7 +12,7 @@
     this.applePos = [Math.round(options.numRows / 2) - 1, 2];
 
     this.score = 0;
-    this.appleScore = 0;
+    this.appleScore = 1;
 
     this.findPaths();
   };
@@ -57,7 +57,7 @@
     }
 
     this.score += this.appleScore;
-    this.appleScore = 0;
+    this.appleScore = 1;
     this.snake.addSegment();
   };
 

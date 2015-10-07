@@ -33,4 +33,7 @@ h1.score {
   color: red;
   font-size: 20px;
   position: absolute;
+  left: 13px;
+  top: 0px;
+  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
 }

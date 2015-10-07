@@ -197,9 +197,9 @@
   };
 
   View.prototype.incrementAppleScore = function () {
-    this.grid.appleScore += 0.5;
+    this.grid.appleScore *= 1.02;
     if (this.grid.appleScore >= 100) {
-      this.grid.appleScore = 0;
+      this.grid.appleScore = 1;
     }
   };
 
@@ -211,7 +211,13 @@
   View.prototype.updateHTMLBlocks = function () {
     var snake = this.snake;
     var applePos = this.grid.applePos;
-    var appleScore = this.grid.appleScore;
+
+    var appleScore;
+    if (this.grid.appleScore < 10) {
+      appleScore = "0" + Math.floor(this.grid.appleScore);
+    } else {
+      appleScore = Math.floor(this.grid.appleScore);
+    }
 
     this.$main.find("section").each(function () {
       var pos = $(this).data('pos');
@@ -224,7 +230,7 @@
       } else if (SnakeGame.Util.samePos(applePos, pos)) {
         $(this).removeClass("snake");
         $(this).addClass("apple");
-        $(this).text(Math.floor(appleScore));
+        $(this).text(appleScore);
       } else {
         $(this).removeClass("apple").removeClass("snake");
         $(this).text("");
