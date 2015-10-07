@@ -262,8 +262,12 @@
     this.snake.chooseDirection();
 
     if (this.snake.stopped) {
-      this.revealGameOverModal();
-      this.stopTimer();
+      if (this.playing) {
+        this.revealGameOverModal();
+        this.stopTimer();
+      } else {
+        this.startGame();
+      }
     } else {
       this.snake.move();
     }
