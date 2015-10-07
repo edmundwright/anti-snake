@@ -1,6 +1,7 @@
 main {
   font-family: sans-serif;
   color: white;
+  position: relative;
 }
 
 section {
@@ -36,4 +37,47 @@ h1.score {
   left: 13px;
   top: 0px;
   text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+}
+
+div.modal {
+  position: absolute;
+  display: block;
+  background: cyan;
+  color: black;
+  border-radius: 5%;
+  opacity: 0.95;
+}
+
+div.modal h1 {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+div.modal p {
+  margin-top: 1em;
+}
+
+div.modal button {
+  border-radius: 10%;
+  width: 5em;
+  background: forestgreen;
+  margin: 0 calc(50% - 2.5em) 0 calc(50% - 2.5em);
+  color: white;
+  font-weight: bold;
+  padding: calc(0.5em);
+  text-align: center;
+  box-shadow: 1px 1px 0 black;
+  cursor: pointer;
+}
+
+div.modal button.restart {
+  margin-top: 2em;
+}
+
+div.modal button:hover {
+  background: red;
+}
+
+div.modal.hidden {
+  display: none;
 }

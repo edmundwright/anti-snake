@@ -2,15 +2,36 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Edmund Wright</title>
+  <title>Anti-Snake</title>
   <link rel="stylesheet" href="css/reset.css" type="text/css">
   <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
 
-<main class="group"></main>
+<main class="group">
+  <div class="welcome modal hidden">
+    <h1>Anti-Snake</h1>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <p>The snake likes apples, which is healthy. But he's a little too keen, and will eat them before they're ripe. Slow him down by building mazes!<p>
+
+    <ul>
+      <li>Click and drag to build or destroy walls.</li>
+      <li>If you hold him back for too long the apple will go rotten, and its score will go down.</li>
+      <li>Take care to prevent the snake from getting trapped!</li>
+    </ul>
+
+    <button class="start">Play</button>
+  </div>
+
+  <div class="game-over modal hidden">
+    <h1>Game over!</h1>
+    <p class="reason">The snake crashed. It trusted you - and you let it down.</p>
+
+    <button class="restart">Play again</button>
+  </div>
+</main>
+
+<script src="vendor/jquery-2.1.4.min.js"></script>
 <script src="js/util.js"></script>
 <script src="js/block.js"></script>
 <script src="js/grid.js"></script>

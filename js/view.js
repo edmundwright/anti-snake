@@ -2,28 +2,20 @@
   window.SnakeGame = window.SnakeGame || {};
 
   View = SnakeGame.View = function (options) {
+    this.options = options;
+
     this.$main = options.$main;
 
     this.chooseDimensions(options.numSquares);
     this.buildHTML();
 
-    this.snake = new SnakeGame.Snake({
-      word: options.word,
-      initialLength: options.initialLength,
-      firstPos: [
-        Math.round(this.dimensions.numRows / 2) - 1,
-        this.dimensions.numCols - 1
-      ]
-    });
-
-    this.grid = new SnakeGame.Grid({
-      numRows: this.dimensions.numRows,
-      numCols: this.dimensions.numCols,
-      snake: this.snake
-    });
+    this.startGame();
+    this.playing = false;
 
     this.setupHandlers();
-    this.timer = setInterval(this.step.bind(this), options.difficulty);
+    this.startTimer();
+
+    this.revealWelcomeModal();
   };
 
   View.prototype.chooseDimensions = function (numSquares) {
@@ -35,6 +27,7 @@
     this.chooseBlockWidth();
     this.chooseSize();
     this.chooseMargins();
+    this.chooseModalDimensions();
   };
 
   View.prototype.chooseSectionBorder = function () {
@@ -81,6 +74,11 @@
       ($(window).width() - this.dimensions.width) / 2;
   };
 
+  View.prototype.chooseModalDimensions = function () {
+    this.dimensions.modalWidth = Math.min(this.dimensions.width, 600);
+    this.dimensions.modalHeight = Math.min(this.dimensions.height, 500);
+  };
+
   View.prototype.buildHTML = function () {
     this.$main.css("height", this.dimensions.height + "px");
     this.$main.css("width", this.dimensions.width + "px");
@@ -93,6 +91,7 @@
 
     this.buildHTMLGrid();
     this.buildHTMLScore();
+    this.buildHTMLModals();
   };
 
   View.prototype.buildHTMLGrid = function () {
@@ -119,15 +118,60 @@
     this.$main.append(this.$scoreDisplay);
   };
 
+  View.prototype.buildHTMLModals = function () {
+    var size = this.dimensions.modalWidth * this.dimensions.modalHeight;
+    var padding = Math.sqrt(size) * 0.03;
+
+    this.$main.find("div.modal").css(
+      "width", (this.dimensions.modalWidth - padding * 2) + "px"
+    ).css(
+      "left", ((this.dimensions.width - this.dimensions.modalWidth) / 2) + "px"
+    ).css(
+      "padding", padding + "px"
+    ).css(
+      "font-size", Math.sqrt(size) * 0.04 + "px"
+    );
+
+    var dimensions = this.dimensions;
+    this.$main.find("div.modal").each(function () {
+      var height = parseInt($(this).css("height"));
+      $(this).css(
+        "top", ((dimensions.height - height - padding * 2) / 2) + "px"
+      );
+    });
+};
+
+  View.prototype.startGame = function () {
+    this.snake = new SnakeGame.Snake({
+      word: this.options.word,
+      initialLength: this.options.initialLength,
+      firstPos: [
+        Math.round(this.dimensions.numRows / 2) - 1,
+        this.dimensions.numCols - 1
+      ]
+    });
+
+    this.grid = new SnakeGame.Grid({
+      numRows: this.dimensions.numRows,
+      numCols: this.dimensions.numCols,
+      snake: this.snake
+    });
+  };
+
   View.prototype.setupHandlers = function () {
     this.setupMouseUp();
     this.setupMouseDown();
     this.setupMouseEnter();
+    this.setupButtons();
   };
 
   View.prototype.setupMouseDown = function () {
     this.$main.on('mousedown', 'section', function (e) {
       e.preventDefault();
+
+      if (!this.playing) {
+        return;
+      }
 
       var pos = $(e.currentTarget).data("pos");
       var wallHere = this.grid.wallAtPos(pos);
@@ -153,6 +197,11 @@
   View.prototype.setupMouseEnter = function () {
     this.$main.on('mouseenter', "section", function (e) {
       e.preventDefault();
+
+      if (!this.playing) {
+        return;
+      }
+
       if (this.addingWalls || this.deletingWalls) {
         var pos = $(e.currentTarget).data("pos");
         var wallHere = this.grid.wallAtPos(pos);
@@ -165,6 +214,22 @@
           this.addWall(pos, $(e.currentTarget));
         }
       }
+    }.bind(this));
+  };
+
+  View.prototype.setupButtons = function () {
+    this.$main.on("click", "button.start", function (e) {
+      this.$main.find("div.modal.welcome").addClass("hidden");
+      this.startGame();
+      this.playing = true;
+    }.bind(this));
+
+    this.$main.on("click", "button.restart", function (e) {
+      this.$main.find("div.modal.game-over").addClass("hidden");
+      this.startGame();
+      this.playing = true;
+      this.startTimer();
+      this.removeHTMLBlocks();
     }.bind(this));
   };
 
@@ -182,6 +247,14 @@
     }
   };
 
+  View.prototype.startTimer = function () {
+    this.timer = setInterval(this.step.bind(this), this.options.difficulty);
+  };
+
+  View.prototype.stopTimer = function () {
+    clearInterval(this.timer);
+  };
+
   View.prototype.step = function () {
     this.updateHTML();
 
@@ -189,8 +262,8 @@
     this.snake.chooseDirection();
 
     if (this.snake.stopped) {
-      console.log("Game over");
-      clearInterval(this.timer);
+      this.revealGameOverModal();
+      this.stopTimer();
     } else {
       this.snake.move();
     }
@@ -238,7 +311,21 @@
     });
   };
 
+  View.prototype.removeHTMLBlocks = function () {
+    this.$main.find("section").removeClass("wall");
+  };
+
   View.prototype.updateHTMLScore = function () {
-    this.$scoreDisplay.text(Math.floor(this.grid.score));
+    if (this.playing) {
+      this.$scoreDisplay.text(Math.floor(this.grid.score));
+    }
+  };
+
+  View.prototype.revealWelcomeModal = function () {
+    this.$main.find("div.modal.welcome").removeClass("hidden");
+  };
+
+  View.prototype.revealGameOverModal = function () {
+    this.$main.find("div.modal.game-over").removeClass("hidden");
   };
 })();
