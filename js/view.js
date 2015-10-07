@@ -1,49 +1,59 @@
 (function () {
   window.SnakeGame = window.SnakeGame || {};
 
-  View = SnakeGame.View = function ($main, word, numSquares, stupid, interval) {
-    this.$main = $main;
+  View = SnakeGame.View = function (options) {
+    this.$main = options.$main;
 
-    this.chooseDimensions(numSquares);
-    this.buildHTMLGrid();
+    this.chooseDimensions(options.numSquares);
+    this.buildHTML();
 
-    this.walls = [];
+    this.snake = new SnakeGame.Snake({
+      word: options.word,
+      initialLength: options.initialLength,
+      firstPos: [
+        Math.round(this.dimensions.numRows / 2) - 1,
+        this.dimensions.numCols - 1
+      ]
+    });
 
-    this.snake = new SnakeGame.Snake(
-      word,
-      stupid,
-      [Math.round(this.dimensions.numRows / 2) - 1, this.dimensions.numCols - 1]
-    );
-
-    this.grid = new SnakeGame.Grid(
-      this.dimensions.numRows,
-      this.dimensions.numCols,
-      this.snake,
-      this.walls
-    );
-
-    this.snake.receiveGrid(this.grid);
+    this.grid = new SnakeGame.Grid({
+      numRows: this.dimensions.numRows,
+      numCols: this.dimensions.numCols,
+      snake: this.snake
+    });
 
     this.setupHandlers();
-    setInterval(this.step.bind(this), interval);
+    this.timer = setInterval(this.step.bind(this), options.difficulty);
   };
 
   View.prototype.chooseDimensions = function (numSquares) {
-    var ratio = $(window).height() / $(window).width();
+    this.dimensions = {};
+
+    this.chooseGridDimensions(numSquares);
+
+    this.chooseSectionBorder();
+    this.chooseBlockWidth();
+    this.chooseSize();
+    this.chooseMargins();
+  };
+
+  View.prototype.chooseSectionBorder = function () {
     var smallestDimension = Math.min(
       $(window).width(), $(window).height()
     );
-
-    this.dimensions = {};
-
     this.dimensions.sectionBorder = Math.round(
       Math.max(smallestDimension * 0.0015, 1)
     );
+  };
 
-    this.dimensions.numCols = Math.round(Math.sqrt(numSquares / ratio));
+  View.prototype.chooseGridDimensions = function (numSquares) {
+    var aspectRatio = $(window).height() / $(window).width();
+    this.dimensions.numCols = Math.round(Math.sqrt(numSquares / aspectRatio));
     this.dimensions.numRows = Math.round(numSquares / this.dimensions.numCols);
+  };
 
-    this.dimensions.squareWidth = Math.min(
+  View.prototype.chooseBlockWidth = function () {
+    this.dimensions.blockWidth = Math.min(
       Math.floor(
         ($(window).width() / this.dimensions.numCols) -
         (this.dimensions.sectionBorder * 2)
@@ -53,30 +63,39 @@
         (this.dimensions.sectionBorder * 2)
       )
     );
+  };
 
+  View.prototype.chooseSize = function () {
     this.dimensions.height =
-      (this.dimensions.squareWidth + (this.dimensions.sectionBorder * 2)) *
+      (this.dimensions.blockWidth + (this.dimensions.sectionBorder * 2)) *
       this.dimensions.numRows;
     this.dimensions.width =
-      (this.dimensions.squareWidth + (this.dimensions.sectionBorder * 2)) *
+      (this.dimensions.blockWidth + (this.dimensions.sectionBorder * 2)) *
       this.dimensions.numCols;
+  };
 
+  View.prototype.chooseMargins = function () {
     this.dimensions.verticalMargin =
       ($(window).height() - this.dimensions.height) / 2;
     this.dimensions.horizontalMargin =
       ($(window).width() - this.dimensions.width) / 2;
   };
 
-  View.prototype.buildHTMLGrid = function () {
-    $main.css("height", this.dimensions.height + "px");
-    $main.css("width", this.dimensions.width + "px");
-    $main.css("font-size", this.dimensions.squareWidth * 0.9 + "px");
-    $main.css(
+  View.prototype.buildHTML = function () {
+    this.$main.css("height", this.dimensions.height + "px");
+    this.$main.css("width", this.dimensions.width + "px");
+    this.$main.css("font-size", this.dimensions.blockWidth * 0.9 + "px");
+    this.$main.css(
       "margin",
       this.dimensions.verticalMargin + "px " +
       this.dimensions.horizontalMargin + "px"
     );
 
+    this.buildHTMLGrid();
+    this.buildHTMLScore();
+  };
+
+  View.prototype.buildHTMLGrid = function () {
     for (var row = 0; row < this.dimensions.numRows; row++) {
       for (var col = 0; col < this.dimensions.numCols; col++) {
         var $section = $("<section></section>");
@@ -85,67 +104,25 @@
       }
     }
 
-    $main.find("section").css(
-      "width", this.dimensions.squareWidth + "px"
+    this.$main.find("section").css(
+      "width", this.dimensions.blockWidth + "px"
     ).css(
-      "height", this.dimensions.squareWidth + "px"
+      "height", this.dimensions.blockWidth + "px"
     ).css(
       "border-width", this.dimensions.sectionBorder + "px"
     );
   };
 
-  View.prototype.updateHTMLSnake = function () {
-    var snake = this.snake;
-    this.$main.find("section").each(function () {
-      var segmentHere = snake.segmentAtPos($(this).data('pos'));
-
-      if (segmentHere) {
-        $(this).addClass("snake");
-        $(this).text(segmentHere.contents);
-      } else {
-        $(this).removeClass("snake");
-        $(this).text("");
-      }
-    });
-  };
-
-  View.prototype.updateHTMLTarget = function () {
-    var target = this.grid.pathTarget;
-    this.$main.find("section").each(function () {
-      var pos = $(this).data('pos');
-
-      if (target[0] === pos[0] && target[1] === pos[1]) {
-        $(this).addClass("target");
-      } else {
-        $(this).removeClass("target");
-      }
-    });
+  View.prototype.buildHTMLScore = function () {
+    this.$scoreDisplay = $("<h1>");
+    this.$scoreDisplay.addClass("score");
+    this.$main.append(this.$scoreDisplay);
   };
 
   View.prototype.setupHandlers = function () {
-    // this.setupKeypress();
     this.setupMouseUp();
     this.setupMouseDown();
     this.setupMouseEnter();
-  };
-
-  View.prototype.setupKeypress = function () {
-    $(document).on("keypress", function (e) {
-      switch (e.keyCode) {
-        case 119:
-          this.snake.direction = [-1, 0];
-          break;
-        case 115:
-          this.snake.direction = [1, 0];
-          break;
-        case 97:
-          this.snake.direction = [0, -1];
-          break;
-        case 100:
-          this.snake.direction = [0, 1];
-          break;
-      }
-    }.bind(this));
   };
 
   View.prototype.setupMouseDown = function () {
@@ -158,7 +135,7 @@
       if (wallHere) {
         this.deletingWalls = true;
         this.deleteWall(wallHere, $(e.currentTarget));
-      } else if (!this.snake.segmentAtPos(pos)) {
+      } else if (this.grid.wallCanBePlaced(pos)) {
         this.addingWalls = true;
         this.addWall(pos, $(e.currentTarget));
       }
@@ -184,32 +161,78 @@
           if (this.deletingWalls) {
             this.deleteWall(wallHere, $(e.currentTarget));
           }
-        } else if (this.addingWalls && !this.snake.segmentAtPos(pos)) {
+        } else if (this.addingWalls && this.grid.wallCanBePlaced(pos)) {
           this.addWall(pos, $(e.currentTarget));
         }
       }
     }.bind(this));
   };
 
-  View.prototype.step = function () {
-    this.updateHTMLSnake();
-    this.updateHTMLTarget();
-    this.snake.chooseDirection();
-    this.snake.move();
-  };
-
   View.prototype.addWall= function (pos, $section) {
-    this.walls.push(new Block("", pos));
+    this.grid.addWallAtPos(pos);
     if ($section) {
-      $section.addClass("wall-here");
+      $section.addClass("wall");
     }
   };
 
   View.prototype.deleteWall = function (wall, $section) {
-    index = this.walls.indexOf(wall);
-    this.walls.splice(index, 1);
+    this.grid.deleteWall(wall);
     if ($section) {
-      $section.removeClass("wall-here");
+      $section.removeClass("wall");
     }
+  };
+
+  View.prototype.step = function () {
+    this.updateHTML();
+
+    this.incrementAppleScore();
+    this.snake.chooseDirection();
+
+    if (this.snake.stopped) {
+      console.log("Game over");
+      clearInterval(this.timer);
+    } else {
+      this.snake.move();
+    }
+  };
+
+  View.prototype.incrementAppleScore = function () {
+    this.grid.appleScore += 0.5;
+    if (this.grid.appleScore >= 100) {
+      this.grid.appleScore = 0;
+    }
+  };
+
+  View.prototype.updateHTML = function () {
+    this.updateHTMLBlocks();
+    this.updateHTMLScore();
+  };
+
+  View.prototype.updateHTMLBlocks = function () {
+    var snake = this.snake;
+    var applePos = this.grid.applePos;
+    var appleScore = this.grid.appleScore;
+
+    this.$main.find("section").each(function () {
+      var pos = $(this).data('pos');
+      var segmentHere = snake.segmentAtPos($(this).data('pos'));
+
+      if (segmentHere) {
+        $(this).removeClass("apple");
+        $(this).addClass("snake");
+        $(this).text(segmentHere.contents);
+      } else if (SnakeGame.Util.samePos(applePos, pos)) {
+        $(this).removeClass("snake");
+        $(this).addClass("apple");
+        $(this).text(Math.floor(appleScore));
+      } else {
+        $(this).removeClass("apple").removeClass("snake");
+        $(this).text("");
+      }
+    });
+  };
+
+  View.prototype.updateHTMLScore = function () {
+    this.$scoreDisplay.text(Math.floor(this.grid.score));
   };
 })();

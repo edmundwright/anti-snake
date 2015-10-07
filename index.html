@@ -11,20 +11,20 @@
 <main class="group"></main>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="js/grid.js"></script>
+<script src="js/util.js"></script>
 <script src="js/block.js"></script>
+<script src="js/grid.js"></script>
 <script src="js/snake.js"></script>
 <script src="js/view.js"></script>
 
 <script>
-  var $main = $("main");
-
-  var word = "Edmund Wright - Developer";
-  var numSquares = 600 //312;
-  var stupid = false;
-  difficulty = 50;
-
-  new SnakeGame.View($main, word, numSquares, stupid, difficulty);
+  new SnakeGame.View({
+    $main: $("main"),
+    word: "Edmund Wright - Developer - He's available for hire you know - Maybe you should hire him? - Probably a good idea - Let's all hire Edmund Wright!",
+    initialLength: 13,
+    numSquares: 900,
+    difficulty: 50
+  });
 </script>
 
 </body>

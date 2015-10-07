@@ -1,13 +1,14 @@
 (function () {
   window.SnakeGame = window.SnakeGame || {};
 
-  Block = SnakeGame.Block = function (contents, pos) {
+  Block = SnakeGame.Block = function (contents, pos, idx) {
     this.contents = contents;
     this.pos = pos;
+    this.idx = idx;
   };
 
   Block.prototype.isAtPos = function (pos) {
-    return this.pos[0] === pos[0] && this.pos[1] === pos[1];
+    return SnakeGame.Util.samePos(this.pos, pos);
   };
 
   Block.inArrayAtPos = function (arr, pos) {

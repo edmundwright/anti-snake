@@ -19,18 +19,18 @@ section.snake {
   border-color: red;
 }
 
-section.wall-here {
+section.wall {
   border-color: blue;
   transition: border-color 0.25s;
 }
 
-/*section.wall-here {
-  background: #F0F8FF;
-  border-color: white;
-  transition: background 0.25s;
-}*/
+section.apple {
+  background: green;
+  border-color: green;
+}
 
-section.target {
-  background: red;
-  border-color: red;
+h1.score {
+  color: red;
+  font-size: 20px;
+  position: absolute;
 }
