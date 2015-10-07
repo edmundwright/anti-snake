@@ -136,7 +136,7 @@
     this.$main.find("div.modal").each(function () {
       var height = parseInt($(this).css("height"));
       $(this).css(
-        "top", ((dimensions.height - height - padding * 2) / 2) + "px"
+        "top", ((dimensions.height - height - padding * 2) / 2.4) + "px"
       );
     });
 };
