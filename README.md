@@ -10,7 +10,7 @@ Twist on the classic Snake game, written in JavaScript. Snake is autonomous, and
 
 - Snake path-finds using a customized breadth-first-search that takes into account the movement of the snake's tail
 - Elements only re-rendered as necessary.
-- Mouse event listeners to allow smooth drawing of walls by the player.
+- Uses mouse event listeners to allow smooth drawing of walls by the player.
 - Game adjusts to fit in any window size.
 
 [screenshot]: ./screenshot.jpg
