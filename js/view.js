@@ -270,9 +270,14 @@
   };
 
   View.prototype.incrementAppleScore = function () {
-    this.grid.appleScore *= 1.02;
+    if (this.grid.appleScore < 1) {
+      this.grid.appleScore += 0.03;
+    } else {
+      this.grid.appleScore *= 1.02;
+    }
+
     if (this.grid.appleScore >= 100) {
-      this.grid.appleScore = 1;
+      this.grid.appleScore = 0;
     }
   };
 
