@@ -263,6 +263,7 @@
 
     if (this.snake.stopped) {
       if (this.playing) {
+        this.playing = false;
         this.revealGameOverModal();
         this.stopTimer();
       } else {
