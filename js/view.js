@@ -104,11 +104,15 @@
     }
 
     this.$main.find("section").css(
-      "width", this.dimensions.blockWidth + "px"
+      "width", this.dimensions.blockWidth * 0.99 + "px"
     ).css(
-      "height", this.dimensions.blockWidth + "px"
+      "height", this.dimensions.blockWidth * 0.9 + "px"
     ).css(
       "border-width", this.dimensions.sectionBorder + "px"
+    ).css(
+      "padding", this.dimensions.blockWidth * 0.05 + "px 0 " + this.dimensions.blockWidth * 0.05 + "px " + this.dimensions.blockWidth * 0.01 + "px"
+    ).css(
+      "line-height", this.dimensions.blockWidth * 0.9 + "px"
     );
   };
 
@@ -296,11 +300,7 @@
     var applePos = this.grid.applePos;
 
     var appleScore;
-    if (this.grid.appleScore < 10) {
-      appleScore = "0" + Math.floor(this.grid.appleScore);
-    } else {
-      appleScore = Math.floor(this.grid.appleScore);
-    }
+    appleScore = Math.floor(this.grid.appleScore);
 
     this.$main.find("section").each(function () {
       var pos = $(this).data('pos');
